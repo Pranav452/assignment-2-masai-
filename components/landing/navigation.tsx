@@ -1,0 +1,38 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/mode-toggle"
+import { Brain } from "lucide-react"
+
+interface NavigationProps {
+  onGetStarted: () => void
+}
+
+export function Navigation({ onGetStarted }: NavigationProps) {
+  return (
+    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center">
+              <Brain className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+              Flowtask Ai
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <ModeToggle />
+            <Button
+              onClick={onGetStarted}
+              className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-6 py-2 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              Get Started
+            </Button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}
