@@ -14,7 +14,7 @@ interface DashboardOverviewProps {
 export function DashboardOverview({ userName }: DashboardOverviewProps) {
   return (
     <div className="h-full overflow-y-auto">
-      <div className="p-8 space-y-8">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
         <WelcomeHeader userName={userName} />
         <TaskAnalyticsAdvanced />
         <CalendarView />

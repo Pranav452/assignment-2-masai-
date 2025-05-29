@@ -45,41 +45,49 @@ export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+      <DialogContent className="sm:max-w-md max-w-[90vw] mx-auto">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="text-lg sm:text-xl">Edit Task</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="description">Task Description</Label>
+        <div className="space-y-4 sm:space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-sm font-medium">Task Description</Label>
             <Input
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter task description"
+              className="w-full"
             />
           </div>
 
-          <div>
-            <Label htmlFor="assignee">Assignee</Label>
+          <div className="space-y-2">
+            <Label htmlFor="assignee" className="text-sm font-medium">Assignee</Label>
             <Input
               id="assignee"
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
               placeholder="Enter assignee name"
+              className="w-full"
             />
           </div>
 
-          <div>
-            <Label htmlFor="deadline">Deadline</Label>
-            <Input id="deadline" type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+          <div className="space-y-2">
+            <Label htmlFor="deadline" className="text-sm font-medium">Deadline</Label>
+            <Input 
+              id="deadline" 
+              type="datetime-local" 
+              value={deadline} 
+              onChange={(e) => setDeadline(e.target.value)} 
+              className="w-full"
+            />
           </div>
 
-          <div>
-            <Label htmlFor="priority">Priority</Label>
+          <div className="space-y-2">
+            <Label htmlFor="priority" className="text-sm font-medium">Priority</Label>
             <Select value={priority} onValueChange={(value: "P1" | "P2" | "P3" | "P4") => setPriority(value)}>
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -91,11 +99,11 @@ export function EditTaskDialog({ task, open, onOpenChange }: EditTaskDialogProps
             </Select>
           </div>
 
-          <div className="flex gap-2 pt-4">
-            <Button onClick={handleSave} className="flex-1">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <Button onClick={handleSave} className="flex-1 w-full sm:w-auto">
               Save Changes
             </Button>
-            <Button variant="outline" onClick={handleCancel} className="flex-1">
+            <Button variant="outline" onClick={handleCancel} className="flex-1 w-full sm:w-auto">
               Cancel
             </Button>
           </div>

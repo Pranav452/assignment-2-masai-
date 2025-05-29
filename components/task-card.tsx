@@ -41,19 +41,19 @@ export function TaskCard({ task }: TaskCardProps) {
       <Card
         className={`transition-all hover:shadow-md bg-white/80 backdrop-blur-sm border-slate-200/50 ${task.completed ? "opacity-60" : ""} ${isOverdue ? "border-red-200 bg-red-50/50" : ""}`}
       >
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2 sm:pb-3">
           <div className="flex items-start justify-between gap-2">
-            <div className="flex items-start gap-2 flex-1">
-              <Checkbox checked={task.completed} onCheckedChange={handleToggleComplete} className="mt-1" />
-              <div className="flex-1">
+            <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+              <Checkbox checked={task.completed} onCheckedChange={handleToggleComplete} className="mt-1 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
                 <h4
-                  className={`font-medium leading-tight text-slate-900 ${task.completed ? "line-through text-slate-500" : ""}`}
+                  className={`font-medium leading-tight text-slate-900 break-words ${task.completed ? "line-through text-slate-500" : ""}`}
                 >
                   {task.description}
                 </h4>
               </div>
             </div>
-            <Badge variant="secondary" className={`${priorityColors[task.priority]} text-white text-xs`}>
+            <Badge variant="secondary" className={`${priorityColors[task.priority]} text-white text-xs flex-shrink-0`}>
               {task.priority}
             </Badge>
           </div>
@@ -63,40 +63,49 @@ export function TaskCard({ task }: TaskCardProps) {
           <div className="space-y-2 text-sm text-slate-600">
             {task.assignee && (
               <div className="flex items-center gap-2">
-                <User className="h-3 w-3" />
-                <span>{task.assignee}</span>
+                <User className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{task.assignee}</span>
               </div>
             )}
 
             {task.deadline && (
-              <div className="flex items-center gap-2">
-                <Calendar className="h-3 w-3" />
-                <span className={isOverdue ? "text-red-600 font-medium" : ""}>
-                  {format(new Date(task.deadline), "MMM d, yyyy")}
-                </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-3 w-3 flex-shrink-0" />
+                  <span className={`${isOverdue ? "text-red-600 font-medium" : ""} text-xs sm:text-sm`}>
+                    {format(new Date(task.deadline), "MMM d, yyyy")}
+                  </span>
+                </div>
                 {task.deadline.includes("T") && (
-                  <>
-                    <Clock className="h-3 w-3 ml-2" />
-                    <span className={isOverdue ? "text-red-600 font-medium" : ""}>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-3 w-3 flex-shrink-0" />
+                    <span className={`${isOverdue ? "text-red-600 font-medium" : ""} text-xs sm:text-sm`}>
                       {format(new Date(task.deadline), "h:mm a")}
                     </span>
-                  </>
+                  </div>
                 )}
               </div>
             )}
           </div>
 
-          <div className="flex gap-1 mt-4">
-            <Button variant="ghost" size="sm" onClick={() => setIsEditOpen(true)} className="h-8 px-2 text-slate-600 hover:text-slate-900">
+          <div className="flex gap-2 mt-3 sm:mt-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setIsEditOpen(true)} 
+              className="h-8 px-3 text-slate-600 hover:text-slate-900 touch-manipulation"
+            >
               <Edit2 className="h-3 w-3" />
+              <span className="sr-only">Edit task</span>
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleDelete}
-              className="h-8 px-2 text-red-600 hover:text-red-700"
+              className="h-8 px-3 text-red-600 hover:text-red-700 touch-manipulation"
             >
               <Trash2 className="h-3 w-3" />
+              <span className="sr-only">Delete task</span>
             </Button>
           </div>
         </CardContent>

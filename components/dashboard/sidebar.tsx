@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Brain, LayoutDashboard, Plus, CheckSquare, Settings, LogOut, Sparkles, TrendingUp, Zap } from "lucide-react"
+import { Brain, LayoutDashboard, Plus, CheckSquare, Settings, LogOut, Sparkles, TrendingUp, Zap, Menu, X } from "lucide-react"
 import type { PageType } from "./dashboard-layout"
 import { useTaskStore } from "@/lib/task-store"
 import { NotificationCenter } from "./notification-center"
@@ -13,9 +13,12 @@ interface SidebarProps {
   currentPage: PageType
   onPageChange: (page: PageType) => void
   userName: string
+  isOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  isMobile?: boolean
 }
 
-export function Sidebar({ currentPage, onPageChange, userName }: SidebarProps) {
+export function Sidebar({ currentPage, onPageChange, userName, isOpen = false, onOpenChange, isMobile = false }: SidebarProps) {
   const { tasks } = useTaskStore()
 
   const pendingTasks = tasks.filter((task) => !task.completed).length
@@ -34,6 +37,13 @@ export function Sidebar({ currentPage, onPageChange, userName }: SidebarProps) {
   const handleLogout = () => {
     localStorage.removeItem("Flowtask Ai_user")
     window.location.reload()
+  }
+
+  const handlePageChange = (page: PageType) => {
+    onPageChange(page)
+    if (isMobile && onOpenChange) {
+      onOpenChange(false)
+    }
   }
 
   const menuItems = [
@@ -61,8 +71,100 @@ export function Sidebar({ currentPage, onPageChange, userName }: SidebarProps) {
       gradient: "from-purple-500 to-pink-600",
       shortcut: "⌘3",
     },
-   
   ]
+
+  if (isMobile) {
+    return (
+      <>
+        {/* Mobile Menu Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onOpenChange?.(true)}
+          className="fixed top-4 left-4 z-50 bg-white/80 backdrop-blur-md shadow-lg"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+
+        {/* Mobile Sidebar Overlay */}
+        {isOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <div className="fixed inset-0 bg-black/50" onClick={() => onOpenChange?.(false)} />
+            <div className="fixed left-0 top-0 h-screen w-80 bg-white/95 backdrop-blur-xl border-r border-slate-200/50 flex flex-col shadow-xl overflow-y-auto">
+              {/* Mobile Close Button */}
+              <div className="flex justify-end p-4">
+                <Button variant="ghost" size="sm" onClick={() => onOpenChange?.(false)}>
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+
+              {/* Header */}
+              <div className="p-6 border-b border-slate-200/50 flex-shrink-0">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+                      <Brain className="h-7 w-7 text-white relative z-10" />
+                    </div>
+                    <div>
+                      <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-blue-900 bg-clip-text text-transparent">
+                        Flowtask Ai
+                      </h1>
+                      <div className="flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-blue-500" />
+                        <span className="text-xs text-slate-500 font-medium">Smart TaskBoard</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="p-6 border-b border-slate-200/50 flex-shrink-0">
+                <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Quick Stats
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200/50">
+                    <div className="text-2xl font-bold text-green-700">{tasks.length}</div>
+                    <div className="text-xs text-green-600 font-medium">Total Tasks</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg p-3 border border-orange-200/50">
+                    <div className="text-2xl font-bold text-orange-700">{highPriorityTasks}</div>
+                    <div className="text-xs text-orange-600 font-medium">High Priority</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex-1 p-6 overflow-y-auto">
+                <nav className="space-y-2">
+                  {menuItems.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant={currentPage === item.id ? "default" : "ghost"}
+                      className={`w-full justify-between h-12 text-left font-medium transition-all duration-200 group ${
+                        currentPage === item.id
+                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg hover:shadow-xl`
+                          : "hover:bg-slate-100/80 text-slate-700 hover:text-slate-900"
+                      }`}
+                      onClick={() => handlePageChange(item.id)}
+                    >
+                      <div className="flex items-center">
+                        <item.icon className="h-5 w-5 mr-3" />
+                        <span className="flex-1">{item.label}</span>
+                      </div>
+                    </Button>
+                  ))}
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    )
+  }
 
   return (
     <div className="fixed left-0 top-0 h-screen w-80 bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col shadow-xl overflow-y-auto z-10">
@@ -86,8 +188,6 @@ export function Sidebar({ currentPage, onPageChange, userName }: SidebarProps) {
           </div>
           <NotificationCenter />
         </div>
-
-
       </div>
 
       {/* Quick Stats */}
@@ -120,23 +220,12 @@ export function Sidebar({ currentPage, onPageChange, userName }: SidebarProps) {
                   ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg hover:shadow-xl`
                   : "hover:bg-slate-100/80 text-slate-700 hover:text-slate-900"
               }`}
-              onClick={() => onPageChange(item.id)}
+              onClick={() => handlePageChange(item.id)}
             >
               <div className="flex items-center">
                 <item.icon className="h-5 w-5 mr-3" />
                 <span className="flex-1">{item.label}</span>
               </div>
-              {/* <div className="flex items-center gap-2">
-                {item.badge && (
-                  <Badge
-                    variant={currentPage === item.id ? "secondary" : "default"}
-                    className={`${currentPage === item.id ? "bg-white/20 text-white" : ""}`}
-                  >
-                    {item.badge}
-                  </Badge>
-                )}
-            
-              </div> */}
             </Button>
           ))}
         </nav>
@@ -170,8 +259,6 @@ export function Sidebar({ currentPage, onPageChange, userName }: SidebarProps) {
             )}
           </div>
         </div>
-
-      
       </div>
     </div>
   )
